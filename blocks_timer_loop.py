@@ -149,23 +149,23 @@ while True: # while number 1
     if current_block == 'stop':
         # print_prevnext()
         print(tf(now()), f'C4+{margins["outside_eclipse"]}s, stopping')
-        break
+        break # number 1
 
     if current_block == 'wait':
         while now() < next_break:
             # print_prevnext()
             print(tf(now()), f'waiting for C1-{margins["outside_eclipse"]}s ...')
             time.sleep(1)
-        continue
+        continue # number 1
 
     # current block is now partial, contacts or middle
 
-    # restart loop rapidly until next frame is due (prevent sleeping into next phase)
+    # restart loop (while number 1) rapidly until next frame is due (prevent sleeping into next phase)
     if current_block == 'partial':
         diff = now() - prev_partial
         if diff < timedelta(seconds=partial_interval):
             time.sleep(0.1)
-            continue
+            continue # number 1
 
     bracketing = len(exposures[current_block]) > 1
 
@@ -190,7 +190,7 @@ while True: # while number 1
 
         # StopCapture()
         print(tf(now()), f'{current_block}: stopped video')
-        continue
+        continue # number 1
 
 
     else: # partial and middle blocks
@@ -203,9 +203,8 @@ while True: # while number 1
             print(tf(now()), f'{current_block}: took image')
 
             if current_block == 'partial':
-                # in partial block, while number 3 only runs once and image is
-                # taken during first iteration
+                # in partial block, while number 3 only runs once and image is  taken during first iteration
                 prev_partial = now()
                 print(tf(now()), f'{current_block}: waiting for {partial_interval}s')
-                break
+                break # number 3
             time.sleep(.1)
