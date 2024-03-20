@@ -18,6 +18,8 @@ exposures = {
     "middle": [1.0, 50.0, 300.0]
 }
 
+partial_interval = 3
+
 
 def now(no_offset=False):
     if no_offset:
@@ -90,11 +92,11 @@ def prev_next_contacts(t):
 
 if simulate_time:
     # simulated_time = times['C1'] - timedelta(seconds=10)
-    simulated_time = times['C2'] - timedelta(seconds=35)
+    # simulated_time = times['C2'] - timedelta(seconds=35)
     # simulated_time = times['C2'] + timedelta(seconds=20)
     # simulated_time = times['C3'] - timedelta(seconds=30)
     # simulated_time = times['C3'] + timedelta(seconds=25)
-    # simulated_time = times['C4'] + timedelta(seconds=-5)
+    simulated_time = times['C4'] + timedelta(seconds=-5)
     now_offset = simulated_time - now(no_offset=True)
 else:
     now_offset = datetime.timedelta(0)
@@ -137,8 +139,9 @@ def print_prevnext():
         except:
             pass
 
+prev_partial = datetime.datetime.min.replace(tzinfo=UTC)
 
-while True:
+while True: # while number 1
     bn = block_number_at(now())
     current_block = blocks[bn]
     next_break = breaks[bn]
@@ -155,18 +158,54 @@ while True:
             time.sleep(1)
         continue
 
+    # current block is now partial, contacts or middle
+
+    # restart loop rapidly until next frame is due (prevent sleeping into next phase)
+    if current_block == 'partial':
+        diff = now() - prev_partial
+        if diff < timedelta(seconds=partial_interval):
+            time.sleep(0.1)
+            continue
+
+    bracketing = len(exposures[current_block]) > 1
+
     bracket_values = cycle(exposures[current_block])
-
-    while now() < next_break:
-        exposure = next(bracket_values)
+    if bracketing:
+        print(tf(now()), f'{current_block}: start bracketing {exposures[current_block]}')
+    else: # set exposure only once at start of block
+        exposure = exposures[current_block][0]
         # set exposure
-        # take image
-        # print_prevnext()
-        print(tf(now()), f'{current_block}: bracketing {exposures[current_block]}: {exposure}')
-        time.sleep(1)
+        print(tf(now()), f'{current_block}: start exposures {exposures[current_block]}, set exposure to {exposure}')
+
+    if current_block == 'contacts':
+        # first iteration of while number 1 since changing to contacts block
+        # CaptureConfig(...)
+        # PrepareToCapture(...)
+        # RunCapture()
+        print(tf(now()), f'{current_block}: prepared and started video')
+
+        while now() < next_break: # while number 2
+            print(tf(now()), f'{current_block}: waiting for video to finish..')
+            time.sleep(1)
+
+        # StopCapture()
+        print(tf(now()), f'{current_block}: stopped video')
+        continue
 
 
+    else: # partial and middle blocks
+        while now() < next_break: # while number 3
+            if bracketing:
+                exposure = next(bracket_values)
+                # set exposure
+                print(tf(now()), f'{current_block}: set exposure to {exposure}')
+            # CaptureSingleFrame()
+            print(tf(now()), f'{current_block}: took image')
 
-
-
-
+            if current_block == 'partial':
+                # in partial block, while number 3 only runs once and image is
+                # taken during first iteration
+                prev_partial = now()
+                print(tf(now()), f'{current_block}: waiting for {partial_interval}s')
+                break
+            time.sleep(.1)
