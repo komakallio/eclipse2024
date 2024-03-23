@@ -3,23 +3,22 @@ from pathlib import Path
 import datetime
 from datetime import timedelta
 from itertools import cycle
+from settings import margins
+from settings import exposures
+import camera
 
 UTC = datetime.timezone.utc
-
-margins = {
-    "outside_eclipse": 5,
-    "outside_total": 30,
-    "inside_total": 25
-}
-
-exposures = {
-    "partial": [0.800],
-    "contacts": [0.032],
-    "middle": [1.0, 50.0, 300.0]
-}
+IMAGEPATH = r'~/Desktop/SharpCap Captures/'
 
 partial_interval = 3
+image_counter = 0
 
+def nextfilename(exposure_time):
+    global image_counter
+    image_counter += 1
+    t = datetime.datetime.strftime(now(), '%Y%m%d-%H%M%S')
+    p = Path(f'{IMAGEPATH}/{t}-{str(image_counter).zfill(4)}-{exposure_time}ms.fits').expanduser()
+    return str(p)
 
 def now(no_offset=False):
     if no_offset:
@@ -91,12 +90,12 @@ def prev_next_contacts(t):
 
 
 if simulate_time:
-    # simulated_time = times['C1'] - timedelta(seconds=10)
-    # simulated_time = times['C2'] - timedelta(seconds=35)
-    # simulated_time = times['C2'] + timedelta(seconds=20)
+    #simulated_time = times['C1'] - timedelta(seconds=10)
+    simulated_time = times['C2'] - timedelta(seconds=35)
+    #simulated_time = times['C2'] + timedelta(seconds=20)
     # simulated_time = times['C3'] - timedelta(seconds=30)
     # simulated_time = times['C3'] + timedelta(seconds=25)
-    simulated_time = times['C4'] + timedelta(seconds=-5)
+    #simulated_time = times['C4'] + timedelta(seconds=-5)
     now_offset = simulated_time - now(no_offset=True)
 else:
     now_offset = datetime.timedelta(0)
@@ -179,16 +178,14 @@ while True: # while number 1
 
     if current_block == 'contacts':
         # first iteration of while number 1 since changing to contacts block
-        # CaptureConfig(...)
-        # PrepareToCapture(...)
-        # RunCapture()
+        camera.start_video_capture(exposure)
         print(tf(now()), f'{current_block}: prepared and started video')
 
         while now() < next_break: # while number 2
-            print(tf(now()), f'{current_block}: waiting for video to finish..')
+            print(tf(now()), f'{current_block}: waiting until {next_break} for video to finish..')
             time.sleep(1)
 
-        # StopCapture()
+        camera.stop_video_capture()
         print(tf(now()), f'{current_block}: stopped video')
         continue # number 1
 
@@ -197,10 +194,8 @@ while True: # while number 1
         while now() < next_break: # while number 3
             if bracketing:
                 exposure = next(bracket_values)
-                # set exposure
-                print(tf(now()), f'{current_block}: set exposure to {exposure}')
-            # CaptureSingleFrame()
-            print(tf(now()), f'{current_block}: took image')
+            print(tf(now()), f'{current_block}: capture image, exposure {exposure} ms')
+            camera.capture_single_frame_to(nextfilename(exposure), exposure)
 
             if current_block == 'partial':
                 # in partial block, while number 3 only runs once and image is  taken during first iteration
