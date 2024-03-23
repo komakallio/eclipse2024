@@ -29,18 +29,16 @@ def nextfilename(exposure_time):
     global image_counter
     image_counter += 1
     t = datetime.datetime.strftime(now(), '%Y%m%d-%H%M%S')
-    return os.path.expanduser(f'{IMAGEPATH}/{t}-{str(image_counter).zfill(4)}-{exposure_time:.1f}ms.fits')
+    return os.path.expanduser(f'{IMAGEPATH}/{t}-{image_counter:04d}-{exposure_time:.1f}ms.fits')
 
 def now(no_offset=False):
     if no_offset:
         return datetime.datetime.now(UTC)
     return datetime.datetime.now(UTC) + now_offset
 
-
 def parse(input):
     format = '%Y-%m-%dT%H:%M:%S.%fZ'
     return datetime.datetime.strptime(input, format).replace(tzinfo=UTC)
-
 
 simulate_time = True
 
