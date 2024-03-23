@@ -12,6 +12,13 @@ from itertools import cycle
 from settings import margins, exposures
 import camera
 
+try:
+    SharpCap
+except NameError:
+    SharpCap = None
+
+camera.init_sharpcap(SharpCap)
+
 UTC = datetime.timezone.utc
 IMAGEPATH = r'~/Desktop/SharpCap Captures/'
 
@@ -22,8 +29,7 @@ def nextfilename(exposure_time):
     global image_counter
     image_counter += 1
     t = datetime.datetime.strftime(now(), '%Y%m%d-%H%M%S')
-    p = Path(f'{IMAGEPATH}/{t}-{str(image_counter).zfill(4)}-{exposure_time}ms.fits').expanduser()
-    return str(p)
+    return os.path.expanduser(f'{IMAGEPATH}/{t}-{str(image_counter).zfill(4)}-{exposure_time:.1f}ms.fits')
 
 def now(no_offset=False):
     if no_offset:
@@ -179,7 +185,7 @@ while True: # while number 1
     else: # set exposure only once at start of block
         exposure = exposures[current_block][0]
         # set exposure
-        print(tf(now()), f'{current_block}: start exposures {exposures[current_block]}, set exposure to {exposure}')
+        print(tf(now()), f'{current_block}: start exposures {exposures[current_block]}, set exposure to {exposure:.1f} ms')
 
     if current_block == 'contacts':
         # first iteration of while number 1 since changing to contacts block
@@ -199,7 +205,7 @@ while True: # while number 1
         while now() < next_break: # while number 3
             if bracketing:
                 exposure = next(bracket_values)
-            print(tf(now()), f'{current_block}: capture image, exposure {exposure} ms')
+            print(tf(now()), f'{current_block}: capture image, exposure {exposure:.1f} ms')
             camera.capture_single_frame_to(nextfilename(exposure), exposure)
 
             if current_block == 'partial':
