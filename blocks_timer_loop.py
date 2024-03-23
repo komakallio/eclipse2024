@@ -1,10 +1,15 @@
+# Change working directory to current script
+import os
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+
 import json
 from pathlib import Path
 import datetime
 from datetime import timedelta
 from itertools import cycle
-from settings import margins
-from settings import exposures
+from settings import margins, exposures
 import camera
 
 UTC = datetime.timezone.utc
