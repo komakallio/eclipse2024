@@ -17,12 +17,19 @@ def set_roi(widthXheight):
     if simulate:
         print(f'[camera simulator] Set ROI to {widthXheight}')
         return
+    if SharpCap.SelectedCamera == None:
+        print('CAMERA DISCONNECTED')
+        return
+
     SharpCap.SelectedCamera.Controls.Resolution.Value = widthXheight
 
 def capture_single_frame_to(filename, exposure_ms):
     if simulate:
         print(f'[camera simulator] Capturing single frame, exposure={exposure_ms:0.3f}ms, to={filename}')
         time.sleep(0.3)
+        return
+    if SharpCap.SelectedCamera == None:
+        print('CAMERA DISCONNECTED')
         return
 
     SharpCap.SelectedCamera.Controls.OutputFormat.Value = 'FITS file (*.fits)'
@@ -32,6 +39,9 @@ def capture_single_frame_to(filename, exposure_ms):
 def start_video_capture(exposure_ms):
     if simulate:
         print(f'[camera simulator] Starting video capture, exposure={exposure_ms:0.3f}')
+        return
+    if SharpCap.SelectedCamera == None:
+        print('CAMERA DISCONNECTED')
         return
 
     SharpCap.SelectedCamera.Controls.OutputFormat.Value = 'FITS file (*.fits)'
@@ -43,6 +53,9 @@ def start_video_capture(exposure_ms):
 def stop_video_capture():
     if simulate:
         print(f'[camera simulator] Stopping video capture')
+        return
+    if SharpCap.SelectedCamera == None:
+        print('CAMERA DISCONNECTED')
         return
 
     SharpCap.SelectedCamera.StopCapture()
