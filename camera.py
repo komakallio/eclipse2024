@@ -10,6 +10,12 @@ def init_sharpcap(s):
         simulate = True
         print('[camera simulator] SharpCap not found; camera simulation enabled')
 
+def set_roi(widthXheight):
+    if simulate:
+        print(f'[camera simulator] Set ROI to {widthXheight}')
+        return
+    SharpCap.SelectedCamera.Controls.Resolution.Value = widthXheight
+
 def capture_single_frame_to(filename, exposure_ms):
     if simulate:
         print(f'[camera simulator] Capturing single frame, exposure={exposure_ms:0.1f}ms, to={filename}')
