@@ -9,3 +9,9 @@ exposures = {
     "contacts": [0.032],
     "middle": [1.0, 50.0, 300.0]
 }
+
+rois = {
+    "partial": "6248x4176",
+    "contacts": "1920x1200",
+    "middle": "6248x4176",
+}

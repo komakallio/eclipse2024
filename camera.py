@@ -9,6 +9,9 @@ def init_sharpcap(s):
     if SharpCap == None:
         simulate = True
         print('[camera simulator] SharpCap not found; camera simulation enabled')
+        return
+
+    SharpCap.SelectedCamera.Controls.Gain.Value = 0
 
 def set_roi(widthXheight):
     if simulate:

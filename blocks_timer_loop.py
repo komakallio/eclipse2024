@@ -9,7 +9,7 @@ from pathlib import Path
 import datetime
 from datetime import timedelta
 from itertools import cycle
-from settings import margins, exposures
+from settings import margins, exposures, rois
 import camera
 
 try:
@@ -149,6 +149,8 @@ def print_prevnext():
 
 prev_partial = datetime.datetime.min.replace(tzinfo=UTC)
 
+set_roi = None
+
 while True: # while number 1
     bn = block_number_at(now())
     current_block = blocks[bn]
@@ -178,12 +180,18 @@ while True: # while number 1
     bracketing = len(exposures[current_block]) > 1
 
     bracket_values = cycle(exposures[current_block])
+
+    current_roi = rois[current_block]
+    if not set_roi or not (set_roi == current_roi):
+        camera.set_roi(current_roi)
+        set_roi = current_roi
+
     if bracketing:
         print(tf(now()), f'{current_block}: start bracketing {exposures[current_block]}')
     else: # set exposure only once at start of block
         exposure = exposures[current_block][0]
         # set exposure
-        print(tf(now()), f'{current_block}: start exposures {exposures[current_block]}, set exposure to {exposure:.1f} ms')
+        print(tf(now()), f'{current_block}: start exposures {exposures[current_block]}, set exposure to {exposure:.3f} ms')
 
     if current_block == 'contacts':
         # first iteration of while number 1 since changing to contacts block
