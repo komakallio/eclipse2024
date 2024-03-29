@@ -11,8 +11,11 @@ def init_sharpcap(s):
         print('[camera simulator] SharpCap not found; camera simulation enabled')
         return
 
+    SharpCap.SelectedCamera.Controls.ColourSpace.Value = 'MONO16'
+    SharpCap.SelectedCamera.Controls.Gain.Automatic = False
     SharpCap.SelectedCamera.Controls.Gain.Value = 0
-
+    SharpCap.SelectedCamera.Controls.Exposure.Automatic = False
+    
 def set_roi(widthXheight):
     if simulate:
         print(f'[camera simulator] Set ROI to {widthXheight}')
