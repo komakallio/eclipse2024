@@ -199,7 +199,8 @@ while True: # while number 1
         print(tf(now()), f'{current_block}: prepared and started video')
 
         while now() < next_break: # while number 2
-            print(tf(now()), f'{current_block}: waiting until {next_break} for video to finish..')
+            seconds_left = (next_break - now()).total_seconds()
+            print(tf(now()), f'{current_block}: waiting for {seconds_left:.0f} s until {next_break.strftime("%H:%M:%S")} for video to finish..')
             time.sleep(1)
 
         camera.stop_video_capture()
