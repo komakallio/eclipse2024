@@ -26,6 +26,17 @@ def set_roi(widthXheight):
 
     SharpCap.SelectedCamera.Controls.Resolution.Value = widthXheight
 
+def set_pan(pan):
+    if simulate:
+        print(f'[camera simulator] Set Pan to {pan}')
+        return
+    if SharpCap.SelectedCamera == None:
+        print('CAMERA DISCONNECTED')
+        return
+
+    SharpCap.SelectedCamera.Controls.Pan.Value = pan
+        
+
 def capture_single_frame_to(filename, exposure_ms):
     if simulate:
         print(f'[camera simulator] Capturing single frame, exposure={exposure_ms:0.3f}ms, to={filename}')
