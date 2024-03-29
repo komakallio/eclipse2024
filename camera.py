@@ -18,7 +18,7 @@ def set_roi(widthXheight):
 
 def capture_single_frame_to(filename, exposure_ms):
     if simulate:
-        print(f'[camera simulator] Capturing single frame, exposure={exposure_ms:0.1f}ms, to={filename}')
+        print(f'[camera simulator] Capturing single frame, exposure={exposure_ms:0.3f}ms, to={filename}')
         time.sleep(0.3)
         return
 
@@ -28,7 +28,7 @@ def capture_single_frame_to(filename, exposure_ms):
 
 def start_video_capture(exposure_ms):
     if simulate:
-        print(f'[camera simulator] Starting video capture, exposure={exposure_ms:0.1f}')
+        print(f'[camera simulator] Starting video capture, exposure={exposure_ms:0.3f}')
         return
 
     SharpCap.SelectedCamera.Controls.OutputFormat.Value = 'FITS file (*.fits)'
