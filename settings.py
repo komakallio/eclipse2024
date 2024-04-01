@@ -16,6 +16,8 @@ rois = {
     "middle": "6248x4176",
 }
 
+partial_interval = 15
+
 pans = {
     "partial": 0,
     "contacts": 500+6248/2-1920/2,

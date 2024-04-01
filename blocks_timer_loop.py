@@ -9,7 +9,7 @@ from pathlib import Path
 import datetime
 from datetime import timedelta
 from itertools import cycle
-from settings import margins, exposures, rois, pans
+from settings import margins, exposures, rois, pans, partial_interval
 import camera
 
 try:
@@ -22,7 +22,6 @@ camera.init_sharpcap(SharpCap)
 UTC = datetime.timezone.utc
 IMAGEPATH = r'~/Desktop/SharpCap Captures/'
 
-partial_interval = 3
 image_counter = 0
 
 def nextfilename(exposure_time):
