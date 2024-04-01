@@ -15,3 +15,9 @@ rois = {
     "contacts": "1920x1200",
     "middle": "6248x4176",
 }
+
+pans = {
+    "partial": 0,
+    "contacts": 500+6248/2-1920/2,
+    "middle": 0,
+}
